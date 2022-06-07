@@ -34,6 +34,7 @@ void connectWifi(); // 와이파이 연결
 void getData(); // API 정보 받아와서 data에 저장
 void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 void setColor(int red, int green, int blue); // RGB 제어하기
+void weatherRGBControl(); // 날씨에 맞게 rgb를 제어해줌
 
 void setup() {
   Serial.begin(115200);
@@ -50,6 +51,8 @@ void loop() {
   delay(500);
   printInfoSample(); // 가져온 정보 출력
   delay(500);
+  weatherRGBControl(); // 현재 날씨에 따라서 RGB 제어하기
+  delay(60000); // 1분 지연
 }
 
 void connectWifi() {
@@ -100,4 +103,42 @@ void setColor(int red, int green, int blue)
   analogWrite(redPin, red);
   analogWrite(greenPin, green);
   analogWrite(bluePin, blue); 
+}
+
+void weatherRGBControl() {
+  const char *weather = data.main.c_str();
+
+  if ( strcmp(weather, "Thunderstorm") == 0 ) { // 천둥번개
+    // codes
+    Serial.println("천둥 번개 상태");
+    return;
+  }
+  if ( strcmp(weather, "Drizzle") == 0 ) { // 이슬비
+    // codes
+    Serial.println("이슬비 상태");
+    return;
+  }
+  if ( strcmp(weather, "Rain") == 0 ) { // 비
+    // codes
+    Serial.println("비 상태");
+    return;
+  }
+  if ( strcmp(weather, "Snow") == 0 ) { // 눈
+    // codes
+    Serial.println("눈 상태");
+    return;
+  }
+  if ( strcmp(weather, "Clear") == 0 ) { // 맑음
+    // codes
+    Serial.println("맑음 상태");
+    return;
+  }
+  if ( strcmp(weather, "Clouds") == 0 ) { // 구름 낌
+    // codes
+    Serial.println("구름 낌 상태");
+    setColor(0, 0, 255);
+    return;
+  }
+  Serial.println("예외 상태"); // Mist, Smoke, Haze, Dust, Fog, Sand, Ash, Squall, Tornado
+  return;
 }
