@@ -25,6 +25,9 @@ const char* WIFI_PASSWORD = "zjarhd410";
 
 // MyVariable
 OpenWeatherMapCurrentData data; // API data를 담을 변수
+int redPin = 13;
+int greenPin = 12;
+int bluePin = 15;
 
 // MyFunctions
 void connectWifi(); // 와이파이 연결
@@ -33,6 +36,9 @@ void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 
 void setup() {
   Serial.begin(115200);
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
   delay(500);
   connectWifi();
 }
