@@ -29,6 +29,7 @@ OpenWeatherMapCurrentData data; // API data를 담을 변수
 // MyFunctions
 void connectWifi(); // 와이파이 연결
 void getData(); // API 정보 받아와서 data에 저장
+void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 
 void setup() {
   Serial.begin(115200);
@@ -60,4 +61,26 @@ void getData() {
   client.setMetric(IS_METRIC);
   client.updateCurrentById(&data, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATION_ID);
   Serial.println("------------------------------------");
+}
+
+void printInfoSample() {
+  // "main": "Rain", String main;
+  Serial.printf("main: %s\n", data.main.c_str());
+  // "description": "shower rain", String description;
+  Serial.printf("description: %s\n", data.description.c_str());
+  // "temp": 290.56, float temp;
+  Serial.printf("temp: %f\n", data.temp);
+  // "temp_min": 289.15, float tempMin;
+  Serial.printf("tempMin: %f\n", data.tempMin);
+  // "temp_max": 292.15 float tempMax;
+  Serial.printf("tempMax: %f\n", data.tempMax);
+  // "clouds": {"all": 90}, uint8_t clouds;
+  Serial.printf("clouds: %d\n", data.clouds);
+  // "dt": 1527015000, uint64_t observationTime;
+  time_t time = data.observationTime;
+  Serial.printf("observationTime: %d, full date: %s", data.observationTime, ctime(&time));
+  // "name": "Zurich", String cityName;
+  Serial.printf("cityName: %s\n", data.cityName.c_str());
+  Serial.println();
+  Serial.println("---------------------------------------------------/\n");
 }
