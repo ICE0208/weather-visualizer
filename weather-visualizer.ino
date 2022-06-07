@@ -33,6 +33,7 @@ int bluePin = 15;
 void connectWifi(); // 와이파이 연결
 void getData(); // API 정보 받아와서 data에 저장
 void printInfoSample(); // data에서 몇가지 정보를 출력해보기
+void setColor(int red, int green, int blue); // RGB 제어하기
 
 void setup() {
   Serial.begin(115200);
@@ -40,11 +41,14 @@ void setup() {
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
   delay(500);
+  setColor(255, 255, 255);
   connectWifi();
 }
 
 void loop() {
   getData(); // 날씨 정보 받아오기
+  delay(500);
+  printInfoSample(); // 가져온 정보 출력
   delay(500);
 }
 
@@ -89,4 +93,11 @@ void printInfoSample() {
   Serial.printf("cityName: %s\n", data.cityName.c_str());
   Serial.println();
   Serial.println("---------------------------------------------------/\n");
+}
+
+void setColor(int red, int green, int blue)
+{
+  analogWrite(redPin, red);
+  analogWrite(greenPin, green);
+  analogWrite(bluePin, blue); 
 }
