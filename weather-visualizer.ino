@@ -9,6 +9,7 @@
 #include <JsonListener.h>
 #include <time.h>
 #include "OpenWeatherMapCurrent.h"
+#include <string.h>
 
 // For Functions
 OpenWeatherMapCurrent client;
@@ -29,6 +30,7 @@ int redPin = 13;
 int greenPin = 12;
 int bluePin = 15;
 int rainPin = 16;
+int earthPin = 5;
 
 // MyFunctions
 void connectWifi(); // 와이파이 연결
@@ -36,7 +38,11 @@ void getData(); // API 정보 받아와서 data에 저장
 void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 void setColor(int red, int green, int blue); // RGB 제어하기
 void weatherRGBControl(); // 날씨에 맞게 rgb를 제어해줌
+void earthLEDControl();
 void rainLEDControl(int doOn);
+void earthLEDControl(int doOn);
+String getTimes();
+void timeManager();
 
 void setup() {
   Serial.begin(115200);
@@ -44,10 +50,12 @@ void setup() {
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
   pinMode(rainPin, OUTPUT);
+  pinMode(earthPin, OUTPUT);
   delay(500);
+  connectWifi();
   setColor(255, 255, 255); // 초기화
   rainLEDControl(0); // 비 꺼지게
-  connectWifi();
+  earthLEDControl(0);
 }
 
 void loop() {
@@ -56,6 +64,8 @@ void loop() {
   printInfoSample(); // 가져온 정보 출력
   delay(500);
   weatherRGBControl(); // 현재 날씨에 따라서 RGB 제어하기
+  delay(500);
+  timeManager();
   delay(60000); // 1분 지연
 }
 
@@ -95,7 +105,8 @@ void printInfoSample() {
   Serial.printf("clouds: %d\n", data.clouds);
   // "dt": 1527015000, uint64_t observationTime;
   time_t time = data.observationTime;
-  Serial.printf("observationTime: %d, full date: %s", data.observationTime, ctime(&time));
+  
+  Serial.println();
   // "name": "Zurich", String cityName;
   Serial.printf("cityName: %s\n", data.cityName.c_str());
   Serial.println();
@@ -160,5 +171,81 @@ void rainLEDControl(int doOn) {
   }
   else {
     digitalWrite(rainPin, LOW);
+  }
+}
+
+void earthLEDControl(int doOn) {
+  if (doOn == 1) {
+    digitalWrite(earthPin, HIGH);
+    Serial.println("켜짐");
+  }
+  else {
+    digitalWrite(earthPin, LOW);
+    Serial.println("꺼짐");
+  }
+}
+
+void timeManager() {
+  String time_data = getTimes();
+  char time_a = time_data[17];
+  char time_b = time_data[18];
+
+  Serial.println(time_a);
+  Serial.println(time_b);
+
+  /*
+   * 오후 6시부터 오전 6시전까지 불 켜지게
+   * +9시간 시차 고려
+   * 오전 9시부터 오후 9시
+   */
+
+   if (time_a == '0') {
+    if (time_b >= '9') {
+      earthLEDControl(1);
+    }
+    else {
+      earthLEDControl(0);
+    }
+   }
+   else if (time_a == '1') {
+    earthLEDControl(1);
+   }
+   else if (time_a == '2') {
+    if (time_b < '1') {
+      earthLEDControl(1);
+    }
+    else {
+      earthLEDControl(0);
+    }
+   }
+}
+
+String getTimes() {
+  WiFiClient client;
+  while (!!!client.connect("google.com", 80)) { //  google.com 연결 안되면, !!! 또는 ! 는 부울
+  Serial.println("connection failed, retrying..."); 
+  }
+  
+  client.print("HEAD / HTTP/1.1\r\n\r\n"); // google.com 에 접속해서 헤더파일 받아오는 명령어?
+
+  while(!!!client.available()) {} // !!! 또는 ! 는 부울
+
+  while(client.available()){
+    if (client.read() == '\n') {   
+      if (client.read() == 'D') {   
+        if (client.read() == 'a') {   
+          if (client.read() == 't') {   
+            if (client.read() == 'e') {   
+              if (client.read() == ':') {   
+                client.read();
+                String theDate = client.readStringUntil('\r'); 
+                client.stop();
+                return theDate;  // Date: 까지 읽고, 맞으면 \r 까지 읽어오기.
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
