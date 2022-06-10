@@ -20,14 +20,15 @@ WiFiClient wifiClient;
 
 // WIFI Settings
 const char* ESP_HOST_NAME = "esp-" + ESP.getFlashChipId();
-const char* WIFI_SSID     = "iptime2.4G-410";
-const char* WIFI_PASSWORD = "zjarhd410";
+const char* WIFI_SSID     = "iptime2.4G-301BB";
+const char* WIFI_PASSWORD = "zjarhd301";
 
 // MyVariable
 OpenWeatherMapCurrentData data; // API data를 담을 변수
 int redPin = 13;
 int greenPin = 12;
 int bluePin = 15;
+int rainPin = 16;
 
 // MyFunctions
 void connectWifi(); // 와이파이 연결
@@ -35,14 +36,17 @@ void getData(); // API 정보 받아와서 data에 저장
 void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 void setColor(int red, int green, int blue); // RGB 제어하기
 void weatherRGBControl(); // 날씨에 맞게 rgb를 제어해줌
+void rainLEDControl(int doOn);
 
 void setup() {
   Serial.begin(115200);
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
+  pinMode(rainPin, OUTPUT);
   delay(500);
-  setColor(255, 255, 255);
+  setColor(255, 255, 255); // 초기화
+  rainLEDControl(0); // 비 꺼지게
   connectWifi();
 }
 
@@ -109,36 +113,52 @@ void weatherRGBControl() {
   const char *weather = data.main.c_str();
 
   if ( strcmp(weather, "Thunderstorm") == 0 ) { // 천둥번개
-    // codes
+    setColor(14, 59, 240); // 찐 노란색
+    rainLEDControl(0);
     Serial.println("천둥 번개 상태");
     return;
   }
   if ( strcmp(weather, "Drizzle") == 0 ) { // 이슬비
-    // codes
+    setColor(255, 255, 0);
+    rainLEDControl(1);
     Serial.println("이슬비 상태");
     return;
   }
   if ( strcmp(weather, "Rain") == 0 ) { // 비
-    // codes
+    setColor(255, 255, 0);
+    rainLEDControl(1);
     Serial.println("비 상태");
     return;
   }
   if ( strcmp(weather, "Snow") == 0 ) { // 눈
-    // codes
+    setColor(255, 255, 0);
+    rainLEDControl(1);
     Serial.println("눈 상태");
     return;
   }
   if ( strcmp(weather, "Clear") == 0 ) { // 맑음
-    // codes
+    setColor(19, 15, 14); // 맑음
+    rainLEDControl(0);
     Serial.println("맑음 상태");
     return;
   }
   if ( strcmp(weather, "Clouds") == 0 ) { // 구름 낌
-    // codes
+    setColor(203, 103, 36); // 하늘색
+    rainLEDControl(0);
     Serial.println("구름 낌 상태");
-    setColor(0, 0, 255);
     return;
   }
   Serial.println("예외 상태"); // Mist, Smoke, Haze, Dust, Fog, Sand, Ash, Squall, Tornado
+  setColor(150, 166, 73); // 약간 회색느낌?
+  rainLEDControl(0);
   return;
+}
+
+void rainLEDControl(int doOn) {
+  if (doOn == 1) {
+    digitalWrite(rainPin, HIGH);
+  }
+  else {
+    digitalWrite(rainPin, LOW);
+  }
 }
