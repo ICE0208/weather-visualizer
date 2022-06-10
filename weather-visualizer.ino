@@ -31,6 +31,8 @@ int greenPin = 12;
 int bluePin = 15;
 int rainPin = 16;
 int earthPin = 5;
+int sunPin = 4;
+int moonPin = 0;
 
 // MyFunctions
 void connectWifi(); // 와이파이 연결
@@ -38,9 +40,10 @@ void getData(); // API 정보 받아와서 data에 저장
 void printInfoSample(); // data에서 몇가지 정보를 출력해보기
 void setColor(int red, int green, int blue); // RGB 제어하기
 void weatherRGBControl(); // 날씨에 맞게 rgb를 제어해줌
-void earthLEDControl();
 void rainLEDControl(int doOn);
 void earthLEDControl(int doOn);
+void sunLEDControl(int doOn);
+void moonLEDControl(int doOn);
 String getTimes();
 void timeManager();
 
@@ -51,11 +54,15 @@ void setup() {
   pinMode(bluePin, OUTPUT);
   pinMode(rainPin, OUTPUT);
   pinMode(earthPin, OUTPUT);
+  pinMode(sunPin, OUTPUT);
+  pinMode(moonPin, OUTPUT);
   delay(500);
   connectWifi();
   setColor(255, 255, 255); // 초기화
   rainLEDControl(0); // 비 꺼지게
-  earthLEDControl(0);
+  earthLEDControl(0); // 지구 꺼지게
+  sunLEDControl(0); // 태양 꺼지게
+  moonLEDControl(0); // 달 꺼지게
 }
 
 void loop() {
@@ -177,11 +184,27 @@ void rainLEDControl(int doOn) {
 void earthLEDControl(int doOn) {
   if (doOn == 1) {
     digitalWrite(earthPin, HIGH);
-    Serial.println("켜짐");
   }
   else {
     digitalWrite(earthPin, LOW);
-    Serial.println("꺼짐");
+  }
+}
+
+void sunLEDControl(int doOn) {
+  if (doOn == 1) {
+    digitalWrite(sunPin, HIGH);
+  }
+  else {
+    digitalWrite(sunPin, LOW);
+  }
+}
+
+void moonLEDControl(int doOn) {
+  if (doOn == 1) {
+    digitalWrite(moonPin, HIGH);
+  }
+  else {
+    digitalWrite(moonPin, LOW);
   }
 }
 
@@ -202,20 +225,30 @@ void timeManager() {
    if (time_a == '0') {
     if (time_b >= '9') {
       earthLEDControl(1);
+      sunLEDControl(0);
+      moonLEDControl(1);
     }
     else {
       earthLEDControl(0);
+      sunLEDControl(1);
+      moonLEDControl(0);
     }
    }
    else if (time_a == '1') {
     earthLEDControl(1);
+    sunLEDControl(0);
+    moonLEDControl(1);
    }
    else if (time_a == '2') {
     if (time_b < '1') {
       earthLEDControl(1);
+      sunLEDControl(0);
+      moonLEDControl(1);
     }
     else {
       earthLEDControl(0);
+      sunLEDControl(1);
+      moonLEDControl(0);
     }
    }
 }
