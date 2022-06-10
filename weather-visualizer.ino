@@ -21,8 +21,8 @@ WiFiClient wifiClient;
 
 // WIFI Settings
 const char* ESP_HOST_NAME = "esp-" + ESP.getFlashChipId();
-const char* WIFI_SSID     = "iptime2.4G-301BB";
-const char* WIFI_PASSWORD = "zjarhd301";
+const char* WIFI_SSID     = "Your Wifi Name";
+const char* WIFI_PASSWORD = "Your Wifi PassWord";
 
 // MyVariable
 OpenWeatherMapCurrentData data; // API data를 담을 변수
