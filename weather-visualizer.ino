@@ -21,8 +21,8 @@ WiFiClient wifiClient;
 
 // WIFI Settings
 const char* ESP_HOST_NAME = "esp-" + ESP.getFlashChipId();
-const char* WIFI_SSID     = "Your Wifi Name";
-const char* WIFI_PASSWORD = "Your Wifi PassWord";
+const char* WIFI_SSID     = "SSID";
+const char* WIFI_PASSWORD = "PASSWORD";
 
 // MyVariable
 OpenWeatherMapCurrentData data; // API data를 담을 변수
@@ -167,7 +167,7 @@ void weatherRGBControl() {
     return;
   }
   Serial.println("예외 상태"); // Mist, Smoke, Haze, Dust, Fog, Sand, Ash, Squall, Tornado
-  setColor(150, 166, 73); // 약간 회색느낌?
+  setColor(14, 250, 14); // 핑크색
   rainLEDControl(0);
   return;
 }
