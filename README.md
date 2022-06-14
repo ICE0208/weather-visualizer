@@ -12,5 +12,5 @@
 | 5파이 LED (yellow, red) | 달과 태양을 표현하기 위해 사용 |
 
 ## 🖼 완성품 사진
-![wv_img](https://user-images.githubusercontent.com/46257328/173581716-b40da88a-17de-4641-ba55-4cfd100569e6.JPG)]
+![wv_img](https://user-images.githubusercontent.com/46257328/173581716-b40da88a-17de-4641-ba55-4cfd100569e6.JPG)
 <img src="https://user-images.githubusercontent.com/46257328/173581716-b40da88a-17de-4641-ba55-4cfd100569e6.JPG  width="200"/>
